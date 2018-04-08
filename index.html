@@ -9,11 +9,11 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114936513-1"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
 
-      gtag('config', 'UA-114936513-1');
+     gtag('config', 'UA-114936513-1');
     </script>
 
   </head>
@@ -165,7 +165,7 @@ class Table extends React.Component {
   render() {
     return (
       <table className="streamingTable">
-        <TableRow data={this.props.data} />
+        <TableRow data={this.props.data}/>
       </table>
     );
   }
@@ -191,28 +191,55 @@ class ShowData extends React.Component {
     	context.socket.close();
       context.socket = null;
     }
-    context.socket = new WebSocket("wss://www.bitmex.com/realtime?subscribe=trade:" + symbol.toUpperCase());
+
+    context.socket = new WebSocket("wss://www.bitmex.com/realtime?subscribe=instrument,trade:" + symbol.toUpperCase());
     context.socket.onmessage = function(event) {
       let obj = JSON.parse(event.data);
-      if (obj.data == null)
-      {
-        return;
-      }
-      let data = average(obj.data, priceFilter);
-			if (streamingData == null)
-      {
-      	streamingData =data;
-      }
-      else
-      {
-      	if (streamingData.length > 100)
-        {
-        		streamingData.splice(streamingData.length - 20);
+
+      if(obj.table == "instrument") {
+        if(obj.action == "partial") {
+          var aimSymbol = symbol.toUpperCase();
+          var symbolData = obj.data.filter(function(data){
+            return data.symbol == aimSymbol;
+          });
+          if (symbolData.length > 0) {
+            context.setStreamOpenInterest(symbolData[0].openInterest);
+          }
         }
-      	streamingData = data.concat(streamingData);
+        if(obj.action == "update" && obj.data != null) {
+          if(obj.data[0].openInterest != undefined) {
+            context.setStreamOpenInterest(obj.data[0].openInterest)
+          }
+        }
       }
-     
-       context.setStreamData({data: streamingData});
+
+      if(obj.table == "trade"){
+        if (obj.data == null)
+        {
+          return;
+        }
+        let data = average(obj.data, priceFilter);
+        if(context.state.openInterest != undefined) {
+          data.map(function(d){
+            d.openInterest = context.state.openInterest;
+            return d
+          })
+        }
+        if (streamingData == null)
+        {
+          streamingData =data;
+        }
+        else
+        {
+          if (streamingData.length > 100)
+          {
+              streamingData.splice(streamingData.length - 20);
+          }
+          streamingData = data.concat(streamingData);
+        }
+
+        context.setStreamData({data: streamingData});
+      }
      };
   }
   
@@ -220,10 +247,14 @@ class ShowData extends React.Component {
       this.setState(data);
   }
 
+  setStreamOpenInterest(openInterest){
+    this.setState({"openInterest": openInterest});
+  }
+
   render() {
     return (
       <div>
-         <Table data={this.state.data}/>
+        <Table data={this.state.data}/>
       </div>);
   	}
 }
