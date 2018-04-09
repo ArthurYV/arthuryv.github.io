@@ -192,21 +192,23 @@ class ShowData extends React.Component {
       context.socket = null;
     }
 
-    context.socket = new WebSocket("wss://www.bitmex.com/realtime?subscribe=instrument,trade:" + symbol.toUpperCase());
+    var UpSymbol = symbol.toUpperCase()
+    context.socket = new WebSocket("wss://www.bitmex.com/realtime?subscribe=instrument,trade:" + UpSymbol);
     context.socket.onmessage = function(event) {
       let obj = JSON.parse(event.data);
 
-      if(obj.table == "instrument") {
+      if(obj.table == "instrument"
+         && obj.data != null
+         && obj.data.length > 0) {
         if(obj.action == "partial") {
-          var aimSymbol = symbol.toUpperCase();
           var symbolData = obj.data.filter(function(data){
-            return data.symbol == aimSymbol;
+            return data.symbol == UpSymbol;
           });
           if (symbolData.length > 0) {
             context.setStreamOpenInterest(symbolData[0].openInterest);
           }
         }
-        if(obj.action == "update" && obj.data != null) {
+        if(obj.action == "update" && obj.data[0].symbol == UpSymbol) {
           if(obj.data[0].openInterest != undefined) {
             context.setStreamOpenInterest(obj.data[0].openInterest)
           }
