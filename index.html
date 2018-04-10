@@ -130,8 +130,7 @@
     
     for(key in sumPriceArr) {
     		var item = sumPriceArr[key];
-		var mulriple = item.homeNotional * item.price / item.sizeSum;
-		console.log(mulriple,item.homeNotional,item.price,item.sizeSum)
+		var mulriple = item.sizeSum / (item.homeNotional * item.price);
         if (item.sizeSum >= priceFilter)
         {
           results.push({ 
