@@ -130,8 +130,8 @@
     
     for(key in sumPriceArr) {
     		var item = sumPriceArr[key];
-		var mulriple1 = item.homeNotional * item.price / item.sizeSum;
-		var mulriple2 = item.homeNotional * item.priceSum / item.sizeSum;
+		var mulriple = item.homeNotional * item.price / item.sizeSum;
+		console.log(mulriple,item.homeNotional,item.price,item.sizeSum)
         if (item.sizeSum >= priceFilter)
         {
           results.push({ 
@@ -142,8 +142,7 @@
           side: item.side,
 	  tickDirection:item.tickDirection,
 	  homeNotional:item.homeNotional,
-	  mulriple1: mulriple1,
-	  mulriple2: mulriple2
+	  mulriple: mulriple,
           });
         }
     }
@@ -162,8 +161,7 @@ class TableRow extends React.Component {
       <td width="100">{data.openInterest}</td>
       <td width="100">{data.tickDirection}</td>
       <td width="100">{data.homeNotional}</td>
-      <td width="100">{data.mulriple1}</td>
-      <td width="100">{data.mulriple2}</td>
+      <td width="100">{data.mulriple}</td>
     </tr>
     );
     return (
