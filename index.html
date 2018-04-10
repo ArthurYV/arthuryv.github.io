@@ -130,8 +130,8 @@
     
     for(key in sumPriceArr) {
     		var item = sumPriceArr[key];
-		var mulriple1 = item.foreignNotional * item.price / item.sizeSum;
-		var mulriple2 = item.foreignNotional * item.priceSum / item.sizeSum;
+		var mulriple1 = item.homeNotional * item.price / item.sizeSum;
+		var mulriple2 = item.homeNotional * item.priceSum / item.sizeSum;
         if (item.sizeSum >= priceFilter)
         {
           results.push({ 
@@ -141,7 +141,7 @@
           timestamp: item.timestamp,
           side: item.side,
 	  tickDirection:item.tickDirection,
-	  foreignNotional:item.foreignNotional,
+	  homeNotional:item.homeNotional,
 	  mulriple1: mulriple1,
 	  mulriple2: mulriple2
           });
