@@ -95,7 +95,7 @@
       }
 
     function average(arr, priceFilter) {
-        var sumSizeArr = {}, sumPriceArr= {}, results = [], timestamp, side,tickDirection,homeNotional,grossValue,foreignNotional;
+        var sumSizeArr = {}, sumPriceArr= {}, results = [], timestamp, side,tickDirection,homeNotional;
         for (var i = 0; i < arr.length; i++) {
      		var item = arr[i];
        	var key = item.timestamp + item.side;
@@ -115,14 +115,13 @@
             sumPriceArr[key] = {};
             sumPriceArr[key].symbol = item.symbol;
             sumPriceArr[key].priceSum = item.price * item.size / sizeItem.sizeSum;
+	    sumPriceArr[key].price = item.price;
             sumPriceArr[key].sizeSum = item.size;
             sumPriceArr[key].timestamp = formatAMPM(new Date(item.timestamp));
             sumPriceArr[key].side = item.side;
 	    sumPriceArr[key].tickDirection = item.tickDirection;
 	    sumPriceArr[key].homeNotional= item.homeNotional;
-	    sumPriceArr[key].foreignNotional = item.foreignNotional;
-	    sumPriceArr[key].grossValue = item.grossValue;
-	    
+	 
         } else {
           sumPriceArr[key].priceSum += item.price * item.size / sizeItem.sizeSum;
           sumPriceArr[key].sizeSum += item.size;
@@ -131,6 +130,8 @@
     
     for(key in sumPriceArr) {
     		var item = sumPriceArr[key];
+		var mulriple1 = item.foreignNotional * item.price / item.sizeSum;
+		var mulriple2 = item.foreignNotional * item.priceSum / item.sizeSum;
         if (item.sizeSum >= priceFilter)
         {
           results.push({ 
@@ -141,8 +142,8 @@
           side: item.side,
 	  tickDirection:item.tickDirection,
 	  foreignNotional:item.foreignNotional,
-	  homeNotional:item.homeNotional,
-	  grossValue:item.grossValue
+	  mulriple1: mulriple1,
+	  mulriple2: mulriple2
           });
         }
     }
@@ -161,8 +162,8 @@ class TableRow extends React.Component {
       <td width="100">{data.openInterest}</td>
       <td width="100">{data.tickDirection}</td>
       <td width="100">{data.homeNotional}</td>
-      <td width="100">{data.foreignNotional}</td>
-      <td width="100">{data.grossValue}</td>
+      <td width="100">{data.mulriple1}</td>
+      <td width="100">{data.mulriple2}</td>
     </tr>
     );
     return (
