@@ -121,6 +121,7 @@
 	    sumPriceArr[key].tickDirection = item.tickDirection;
 	    sumPriceArr[key].homeNotional= item.homeNotional;
 	    sumPriceArr[key].foreignNotional = item.foreignNotional;
+	    sumPriceArr[key].grossValue = item.grossValue;
 	    
         } else {
           sumPriceArr[key].priceSum += item.price * item.size / sizeItem.sizeSum;
@@ -140,7 +141,8 @@
           side: item.side,
 	  tickDirection:item.tickDirection,
 	  foreignNotional:item.foreignNotional,
-	  homeNotional:item.homeNotional
+	  homeNotional:item.homeNotional,
+	  grossValue:item.grossValue
           });
         }
     }
@@ -160,6 +162,7 @@ class TableRow extends React.Component {
       <td width="100">{data.tickDirection}</td>
       <td width="100">{data.homeNotional}</td>
       <td width="100">{data.foreignNotional}</td>
+      <td width="100">{data.grossValue}</td>
     </tr>
     );
     return (
