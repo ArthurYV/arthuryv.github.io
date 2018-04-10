@@ -95,7 +95,7 @@
       }
 
     function average(arr, priceFilter) {
-        var sumSizeArr = {}, sumPriceArr= {}, results = [], timestamp, side;
+        var sumSizeArr = {}, sumPriceArr= {}, results = [], timestamp, side,tickDirection;
         for (var i = 0; i < arr.length; i++) {
      		var item = arr[i];
        	var key = item.timestamp + item.side;
@@ -118,6 +118,7 @@
             sumPriceArr[key].sizeSum = item.size;
             sumPriceArr[key].timestamp = formatAMPM(new Date(item.timestamp));
             sumPriceArr[key].side = item.side;
+	    sumPriceArr[key].tickDirection = item.tickDirection;
         } else {
           sumPriceArr[key].priceSum += item.price * item.size / sizeItem.sizeSum;
           sumPriceArr[key].sizeSum += item.size;
