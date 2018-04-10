@@ -95,7 +95,7 @@
       }
 
     function average(arr, priceFilter) {
-        var sumSizeArr = {}, sumPriceArr= {}, results = [], timestamp, side,tickDirection;
+        var sumSizeArr = {}, sumPriceArr= {}, results = [], timestamp, side,tickDirection,homeNotional,grossValue;
         for (var i = 0; i < arr.length; i++) {
      		var item = arr[i];
        	var key = item.timestamp + item.side;
@@ -119,6 +119,8 @@
             sumPriceArr[key].timestamp = formatAMPM(new Date(item.timestamp));
             sumPriceArr[key].side = item.side;
 	    sumPriceArr[key].tickDirection = item.tickDirection;
+	    sumPriceArr[key].homeNotional= item.homeNotional;
+	    sumPriceArr[Key].grossValue = itme.grossValue;
         } else {
           sumPriceArr[key].priceSum += item.price * item.size / sizeItem.sizeSum;
           sumPriceArr[key].sizeSum += item.size;
@@ -135,7 +137,9 @@
           size: item.sizeSum,
           timestamp: item.timestamp,
           side: item.side,
-	  tickDirection:item.tickDirection
+	  tickDirection:item.tickDirection,
+	  grossValue:item.grossValue,
+	  homeNotional:item.homeNotional
           });
         }
     }
@@ -153,6 +157,8 @@ class TableRow extends React.Component {
       <td width="100">{data.timestamp}</td>
       <td width="100">{data.openInterest}</td>
       <td width="100">{data.tickDirection}</td>
+      <td width="100">{data.grossValue}</td>
+      <td width="100">{data.homeNotional}</td>
     </tr>
     );
     return (
